@@ -14,36 +14,42 @@ const TodoContextProvider = ({ children, alert }) => {
   };
 
   const addNewTodo = async (todo) => {
-    await fetch("http://localhost:3000/todos", {
+    if (todo.name === "") return;
+    let response = await fetch("http://localhost:3000/todos", {
       method: "POST",
       body: JSON.stringify(todo),
       headers: { "Content-Type": "application/json" },
     });
-    //after addition get all todos again with new todo
-    await getTodos();
-    alert.show(`${todo.name} added!`);
+    if (response.ok) {
+      await getTodos();
+      alert.show(`${todo.name} added!`);
+    } else {
+      window.alert("Error occured!");
+    }
   };
 
   const removeTodo = async (targetTodo) => {
-    await fetch(`http://localhost:3000/todos/${targetTodo.id}`, {
+    let result = await fetch(`http://localhost:3000/todos/${targetTodo.id}`, {
       method: "DELETE",
     });
-    await getTodos();
-    alert.show(`${targetTodo.name} deleted!`);
+    if (result.ok) {
+      setTodos((prevState) => {
+        return prevState.filter((todo) => {
+          return todo.id !== targetTodo.id;
+        });
+      });
+      alert.show(`${targetTodo.name} deleted!`);
+    } else {
+      window.alert("Error occured!");
+    }
   };
 
-  const editTodo = (todo) => {
-    //   const input = document.getElementById(todo.id);
-    //   input.disabled = false;
-    //   input.focus();
-    //   console.log(input.disabled);
-  };
-
+  //effects
   useEffect(() => {
     getTodos();
   }, []);
   return (
-    <TodoContext.Provider value={{ todos, removeTodo, addNewTodo, editTodo }}>
+    <TodoContext.Provider value={{ todos, removeTodo, addNewTodo }}>
       {children}
     </TodoContext.Provider>
   );

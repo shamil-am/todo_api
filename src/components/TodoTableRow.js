@@ -8,6 +8,7 @@ import { useContext, useState, createRef } from "react";
 import { TodoContext } from "../Context/TodoContext";
 import styled from "styled-components";
 import { useAlert } from "react-alert";
+import { Modal } from "antd";
 
 //styled
 const TodoName = styled.input`
@@ -31,8 +32,32 @@ const TodoTableRow = ({ todo }) => {
   const todoContext = useContext(TodoContext);
   const removeTodo = todoContext.removeTodo;
   const alert = useAlert();
+  const [visible, setVisible] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState("Are you sure to delete?");
 
+  // --modal
+  const showModal = () => {
+    setVisible(true);
+  };
+
+  const handleOk = () => {
+    setModalText("Deleting...");
+    setConfirmLoading(true);
+    setVisible(false);
+    setConfirmLoading(false);
+    removeTodo(todo); //after ok clicked remove item
+  };
+
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setVisible(false);
+  };
+  // modal--
   //
+  const handleRemove = () => {
+    showModal();
+  };
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
@@ -59,63 +84,73 @@ const TodoTableRow = ({ todo }) => {
     setEditable(false);
     setInputValue(inputDefaultValue);
   };
-
   return (
-    <TableRow
-      key={todo.id}
-      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-    >
-      <TableCell component="th" scope="row">
-        <TodoName
-          value={inputValue}
-          disabled={!editable}
-          ref={inputRef}
-          onChange={handleInputChange}
-        />
-      </TableCell>
-      <TableCell>
-        {editable ? (
-          <>
+    <>
+      <Modal
+        title="Title"
+        visible={visible}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
+      <TableRow
+        key={todo.id}
+        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+      >
+        <TableCell component="th" scope="row">
+          <TodoName
+            value={inputValue}
+            disabled={!editable}
+            ref={inputRef}
+            onChange={handleInputChange}
+          />
+        </TableCell>
+        <TableCell>
+          {editable ? (
+            <>
+              <Button
+                variant="contained"
+                color="success"
+                startIcon={<SaveIcon />}
+                onClick={() => btnSave(todo)}
+              >
+                Save
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<SaveIcon />}
+                onClick={btnCancel}
+                style={{ marginLeft: ".5rem" }}
+              >
+                Cancel
+              </Button>
+            </>
+          ) : (
             <Button
               variant="contained"
-              color="success"
-              startIcon={<SaveIcon />}
-              onClick={() => btnSave(todo)}
+              color="warning"
+              startIcon={<ModeEditOutlineIcon />}
+              onClick={btnEdit}
             >
-              Save
+              Edit
             </Button>
-            <Button
-              variant="outlined"
-              color="error"
-              startIcon={<SaveIcon />}
-              onClick={btnCancel}
-              style={{ marginLeft: ".5rem" }}
-            >
-              Cancel
-            </Button>
-          </>
-        ) : (
+          )}
+        </TableCell>
+        <TableCell>
           <Button
             variant="contained"
-            color="warning"
-            startIcon={<ModeEditOutlineIcon />}
-            onClick={btnEdit}
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={handleRemove}
           >
-            Edit
+            Delete
           </Button>
-        )}
-      </TableCell>
-      <TableCell>
-        <Button
-          variant="contained"
-          color="error"
-          startIcon={<DeleteIcon />}
-          onClick={() => removeTodo(todo)}
-        >
-          Delete
-        </Button>
-      </TableCell>
-    </TableRow>
+        </TableCell>
+      </TableRow>
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 {
   "todos": [
     {
-      "name": "Create react app 522-26-66",
+      "name": "Create react app",
       "id": 1
     },
     {
@@ -9,15 +9,15 @@
       "name": "Drink coffe"
     },
     {
-      "id": 3,
-      "name": "Repair car"
+      "name": "Meet with friends",
+      "id": 3
     },
     {
-      "name": "quiz make for student",
+      "name": "make quiz for student",
       "id": 6
     },
     {
-      "name": "Order meal on wolt",
+      "name": "Order meal",
       "id": 8
     }
   ]
