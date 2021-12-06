@@ -1,0 +1,24 @@
+{
+  "todos": [
+    {
+      "name": "Create react app 522-26-66",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "name": "Drink coffe"
+    },
+    {
+      "id": 3,
+      "name": "Repair car"
+    },
+    {
+      "name": "quiz make for student",
+      "id": 6
+    },
+    {
+      "name": "Order meal on wolt",
+      "id": 8
+    }
+  ]
+}
